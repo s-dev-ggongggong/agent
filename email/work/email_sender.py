@@ -62,7 +62,7 @@ def main():
                     f"{orig_body.replace('^M', '').strip()}"
 
         # IMAP 서버 정보
-        imap_server = '10.0.10.162'
+        imap_server = ''
         password = 'igloo1234'  # 실제 비밀번호로 교체
 
         # sender에서 도메인 제거하여 사용자명 생성
