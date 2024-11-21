@@ -37,7 +37,7 @@ def get_department_ids(cursor, training_id):
 
 def get_emails_by_department(cursor, department_id):
     """employees 테이블에서 department_id를 기반으로 부서 내 직원들의 이메일 주소를 추출"""
-    cursor.execute("SELECT email FROM employees WHERE department_id = ?", (department_id,))
+    cursor.execute("SELECT email FROM employees WHERE department_id = ? AND is_admin = 0", (department_id,))
     results = cursor.fetchall()
     return [row[0] for row in results]  # 이메일 주소 리스트 반환
 
@@ -46,16 +46,18 @@ def main():
         sys.exit(1)  # 잘못된 인수 개수로 종료
 
     training_id = sys.argv[1]
-
+    #print(training_id)
     # DB 연결
     conn, cursor = connect_to_db()
 
+    #print(training_id)
     try:
         # 훈련 제목 및 resource_user 값 추출
         training_name, resource_user = get_training_details(cursor, training_id)
 
         # training_id와 action이 targetSetting인 경우의 모든 department_id 추출
         department_ids = get_department_ids(cursor, training_id)
+        #print(department_ids)
         if department_ids:
             emails = []
             # 각 department_id에 대해 부서 내 이메일 주소를 추출
@@ -63,9 +65,11 @@ def main():
                 emails.extend(get_emails_by_department(cursor, department_id))
 
             if emails:
+                #print(emails, resource_user)
+                
                 # resource_user 값만큼의 이메일을 랜덤으로 선택
                 selected_emails = random.sample(emails, resource_user)
-
+                
                 # 선택된 이메일 주소를 resource_user.txt에 저장
                 resource_user_file_path = "/home/ec2-user/Agent/email/resource/resource_user.txt"
                 with open(resource_user_file_path, "w") as resource_file:
@@ -85,6 +89,7 @@ def main():
                 # department_ids 중 첫 번째 값을 선택하거나 필요에 따라 변경
                 selected_department_id = department_ids[0]  # 예시로 첫 번째 department_id 사용
 
+                print(scanner_path, email_file_path, resource_user_file_path, training_id, str(selected_department_id))
                 # scanner.py 호출, 이메일 주소 파일, resource_user 파일, training_id, department_id를 인자로 넘김
                 subprocess.run(
                     ["python3", scanner_path, email_file_path, resource_user_file_path, training_id, str(selected_department_id)], 
