@@ -179,6 +179,8 @@ def main():
             for email_data, email_id in zip(all_new_emails, inserted_ids):
                 if check_reply_conditions(email_data['body']):
                     subprocess.run(["python3", "/home/ec2-user/Agent/email/work/email_maker.py", str(email_id), str(training_id), str(department_id)])  # department_id 추가
+                else:
+                    subprocess.run(["python3", "/home/ec2-user/Agent/email/work/email_maker_general.py", str(email_id), str(training_id), str(department_id)])
 
             time.sleep(600)  # 10분 대기
 
