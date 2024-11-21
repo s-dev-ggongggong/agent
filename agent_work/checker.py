@@ -4,7 +4,7 @@ import subprocess
 from datetime import datetime
 
 # DB_connect.py 경로 추가
-sys.path.append('/home/ec2-user/Agent/DB/')
+sys.path.append('/home/ec2-user/Agent/DB')
 
 # DB 연결 함수 가져오기
 from DB_connect import connect_to_db, close_connection
@@ -19,10 +19,13 @@ def update_status():
     # trainings 테이블의 필요한 데이터 가져오기
     cursor.execute("SELECT id, training_start, training_end, status FROM trainings")
     rows = cursor.fetchall()
+    
 
     # 상태 업데이트 여부를 저장할 리스트
     training_ids_to_notify = []
 
+
+    #print(rows)
     # 각 행에 대해 상태 업데이트
     for row in rows:
         record_id, training_start, training_end, status = row
